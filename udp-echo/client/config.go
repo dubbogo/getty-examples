@@ -17,7 +17,7 @@ import (
 )
 
 import (
-	log "github.com/AlexStocks/log4go"
+	log "github.com/dubbogo/log4go"
 	config "github.com/koding/multiconfig"
 )
 

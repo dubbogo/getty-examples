@@ -1,6 +1,6 @@
 # getty examples ##
 ---
-*[getty](https://github.com/alexstocks/getty) code examples*
+*[getty](https://github.com/dubbogo/getty) code examples*
 
 > getty-examples alse shows a java like compile package.
 

@@ -16,9 +16,9 @@ import (
 )
 
 import (
-	"github.com/AlexStocks/getty"
+	"github.com/dubbogo/getty"
 	// "github.com/AlexStocks/goext/strings"
-	log "github.com/AlexStocks/log4go"
+	log "github.com/dubbogo/log4go"
 )
 
 type EchoPackageHandler struct {

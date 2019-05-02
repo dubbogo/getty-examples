@@ -24,11 +24,11 @@ import (
 )
 
 import (
-	"github.com/AlexStocks/getty"
+	"github.com/dubbogo/getty"
 	"github.com/AlexStocks/goext/log"
 	"github.com/AlexStocks/goext/net"
 	"github.com/AlexStocks/goext/time"
-	log "github.com/AlexStocks/log4go"
+	log "github.com/dubbogo/log4go"
 )
 
 const (
