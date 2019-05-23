@@ -1,7 +1,6 @@
 package hello
 
 import (
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -16,5 +15,5 @@ func WaitCloseSignals(closer Closer) {
 	signal.Notify(signals, os.Interrupt, os.Kill, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	<-signals
 	closer.Close()
-	log.Println("server closed ...")
+	log.Info("server closed ...")
 }

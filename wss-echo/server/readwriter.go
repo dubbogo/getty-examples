@@ -12,13 +12,14 @@ package main
 import (
 	"bytes"
 	"errors"
+
 	"time"
 )
 
 import (
 	"github.com/dubbogo/getty"
-	// "github.com/AlexStocks/goext/strings"
-	log "github.com/dubbogo/log4go"
+	// "github.com/dubbogo/getty/strings"
+	
 )
 
 type EchoPackageHandler struct {
@@ -29,7 +30,7 @@ func NewEchoPackageHandler() *EchoPackageHandler {
 }
 
 func (h *EchoPackageHandler) Read(ss getty.Session, data []byte) (interface{}, int, error) {
-	// log.Debug("get client package:%s", gxstrings.String(data))
+	// log.Debugf("get client package:%s", gxstrings.String(data))
 	var (
 		err error
 		len int
@@ -39,7 +40,7 @@ func (h *EchoPackageHandler) Read(ss getty.Session, data []byte) (interface{}, i
 
 	buf = bytes.NewBuffer(data)
 	len, err = pkg.Unmarshal(buf)
-	log.Debug("pkg.Read:%#v", pkg)
+	log.Debugf("pkg.Read:%#v", pkg)
 	if err != nil {
 		if err == ErrNotEnoughStream {
 			return nil, 0, nil
@@ -63,18 +64,18 @@ func (h *EchoPackageHandler) Write(ss getty.Session, pkg interface{}) error {
 
 	startTime = time.Now()
 	if echoPkg, ok = pkg.(*EchoPackage); !ok {
-		log.Error("illegal pkg:%+v\n", pkg)
+		log.Errorf("illegal pkg:%+v\n", pkg)
 		return errors.New("invalid echo package!")
 	}
 
 	buf, err = echoPkg.Marshal()
 	if err != nil {
-		log.Warn("binary.Write(echoPkg{%#v}) = err{%#v}", echoPkg, err)
+		log.Warnf("binary.Write(echoPkg{%#v}) = err{%#v}", echoPkg, err)
 		return err
 	}
 
 	err = ss.WriteBytes(buf.Bytes())
-	log.Info("WriteEchoPkgTimeMs = %s", time.Since(startTime).String())
+	log.Infof("WriteEchoPkgTimeMs = %s", time.Since(startTime).String())
 
 	return err
 }

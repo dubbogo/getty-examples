@@ -10,6 +10,6 @@
 # ******************************************************
 
 export APP_CONF_FILE=`pwd`/config.yml
-export APP_LOG_CONF_FILE=`pwd`/log.xml
+
 
 go run *.go

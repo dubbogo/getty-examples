@@ -12,6 +12,9 @@ package main
 import (
 	// "flag"
 	"fmt"
+
+	"github.com/dubbogo/getty-examples/utils"
+
 	"net"
 	"net/http"
 	_ "net/http/pprof"
@@ -26,10 +29,10 @@ import (
 
 import (
 	"github.com/dubbogo/getty"
-	"github.com/AlexStocks/goext/log"
-	"github.com/AlexStocks/goext/net"
-	"github.com/AlexStocks/goext/time"
-	log "github.com/dubbogo/log4go"
+
+
+
+
 )
 
 const (
@@ -50,8 +53,8 @@ func main() {
 	initProfiling()
 
 	initClient()
-	gxlog.CInfo("%s starts successfull! its version=%s\n", conf.AppName, Version)
-	log.Info("%s starts successfull! its version=%s\n", conf.AppName, Version)
+	log.Infof("%s starts successfull! its version=%s\n", conf.AppName, Version)
+
 
 	go test()
 
@@ -63,8 +66,8 @@ func initProfiling() {
 		addr string
 	)
 
-	addr = gxnet.HostAddress(conf.LocalHost, conf.ProfilePort)
-	log.Info("App Profiling startup on address{%v}", addr+pprofPath)
+	addr = utils.HostAddress(conf.LocalHost, conf.ProfilePort)
+	log.Infof("App Profiling startup on address{%v}", addr+pprofPath)
 	go func() {
 		log.Info(http.ListenAndServe(addr, nil))
 	}()
@@ -106,7 +109,7 @@ func newSession(session getty.Session) error {
 	session.SetWriteTimeout(conf.GettySessionParam.tcpWriteTimeout)
 	session.SetCronPeriod((int)(conf.heartbeatPeriod.Nanoseconds() / 1e6))
 	session.SetWaitTime(conf.GettySessionParam.waitTimeout)
-	log.Debug("client new session:%s\n", session.Stat())
+	log.Debugf("client new session:%s\n", session.Stat())
 
 	return nil
 }
@@ -114,13 +117,13 @@ func newSession(session getty.Session) error {
 func initClient() {
 	if conf.WSSEnable {
 		client.gettyClient = getty.NewWSSClient(
-			getty.WithServerAddress(gxnet.WSSHostAddress(conf.ServerHost, conf.ServerPort, conf.ServerPath)),
+			getty.WithServerAddress(utils.WSSHostAddress(conf.ServerHost, conf.ServerPort, conf.ServerPath)),
 			getty.WithConnectionNumber((int)(conf.ConnectionNum)),
 			getty.WithRootCertificateFile(conf.CertFile),
 		)
 	} else {
 		client.gettyClient = getty.NewWSClient(
-			getty.WithServerAddress(gxnet.WSSHostAddress(conf.ServerHost, conf.ServerPort, conf.ServerPath)),
+			getty.WithServerAddress(utils.WSSHostAddress(conf.ServerHost, conf.ServerPort, conf.ServerPath)),
 			getty.WithConnectionNumber((int)(conf.ConnectionNum)),
 		)
 	}
@@ -139,23 +142,22 @@ func initSignal() {
 	signal.Notify(signals, os.Interrupt, os.Kill, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT)
 	for {
 		sig := <-signals
-		log.Info("get signal %s", sig.String())
+		log.Infof("get signal %s", sig.String())
 		switch sig {
 		case syscall.SIGHUP:
 		// reload()
 		default:
 			go time.AfterFunc(conf.failFastTimeout, func() {
-				// log.Warn("app exit now by force...")
-				// os.Exit(1)
-				log.Exit("app exit now by force...")
-				log.Close()
+				log.Info("app exit now by force...")
+				os.Exit(1)
+
 			})
 
 			// 要么fastFailTimeout时间内执行完毕下面的逻辑然后程序退出，要么执行上面的超时函数程序强行退出
 			uninitClient()
-			// fmt.Println("app exit now...")
-			log.Exit("app exit now...")
-			log.Close()
+			log.Info("app exit now...")
+			os.Exit(1)
+
 			return
 		}
 	}
@@ -174,7 +176,7 @@ func echo() {
 	if session := client.selectSession(); session != nil {
 		err := session.WritePkg(&pkg, conf.GettySessionParam.waitTimeout)
 		if err != nil {
-			log.Warn("session.WritePkg(session{%s}, pkg{%s}, timeout{%d}) = error{%v}",
+			log.Warnf("session.WritePkg(session{%s}, pkg{%s}, timeout{%d}) = error{%v}",
 				session.Stat(), pkg, conf.GettySessionParam.waitTimeout, err)
 			session.Close()
 			client.removeSession(session)
@@ -192,13 +194,13 @@ func test() {
 
 	var (
 		cost    int64
-		counter gxtime.CountWatch
+		counter getty.CountWatch
 	)
 	counter.Start()
 	for i := 0; i < conf.EchoTimes; i++ {
 		echo()
 	}
 	cost = counter.Count()
-	log.Info("after loop %d times, echo cost %d ms", conf.EchoTimes, cost/1e6)
-	gxlog.CInfo("after loop %d times, echo cost %d ms", conf.EchoTimes, cost/1e6)
+	log.Infof("after loop %d times, echo cost %d ms", conf.EchoTimes, cost/1e6)
+	log.Infof("after loop %d times, echo cost %d ms", conf.EchoTimes, cost/1e6)
 }

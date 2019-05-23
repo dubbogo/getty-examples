@@ -10,6 +10,7 @@
 package main
 
 import (
+
 	"math/rand"
 	"net"
 	"sync"
@@ -19,7 +20,7 @@ import (
 
 import (
 	"github.com/dubbogo/getty"
-	log "github.com/dubbogo/log4go"
+	
 )
 
 var (
@@ -55,7 +56,7 @@ func (c *EchoClient) close() {
 	defer c.lock.Unlock()
 	if c.gettyClient != nil {
 		for _, s := range c.sessions {
-			log.Info("close client session{%s, last active:%s, request number:%d}",
+			log.Infof("close client session{%s, last active:%s, request number:%d}",
 				s.session.Stat(), s.session.GetActive().String(), s.reqNum)
 			s.session.Close()
 		}
@@ -71,7 +72,7 @@ func (c *EchoClient) selectSession() getty.Session {
 	defer c.lock.RUnlock()
 	count := len(c.sessions)
 	if count == 0 {
-		log.Info("client session array is nil...")
+		log.Infof("client session array is nil...")
 		return nil
 	}
 
@@ -79,14 +80,14 @@ func (c *EchoClient) selectSession() getty.Session {
 }
 
 func (c *EchoClient) addSession(session getty.Session) {
-	log.Debug("add session{%s}", session.Stat())
+	log.Debugf("add session{%s}", session.Stat())
 	if session == nil {
 		return
 	}
 
 	c.lock.Lock()
 	c.sessions = append(c.sessions, &clientEchoSession{session: session})
-	log.Debug("after add session{%s}, session number:%d", session.Stat(), len(c.sessions))
+	log.Debugf("after add session{%s}, session number:%d", session.Stat(), len(c.sessions))
 	c.lock.Unlock()
 }
 
@@ -100,11 +101,11 @@ func (c *EchoClient) removeSession(session getty.Session) {
 	for i, s := range c.sessions {
 		if s.session == session {
 			c.sessions = append(c.sessions[:i], c.sessions[i+1:]...)
-			log.Debug("delete session{%s}, its index{%d}", session.Stat(), i)
+			log.Debugf("delete session{%s}, its index{%d}", session.Stat(), i)
 			break
 		}
 	}
-	log.Info("after remove session{%s}, left session number:%d", session.Stat(), len(c.sessions))
+	log.Infof("after remove session{%s}, left session number:%d", session.Stat(), len(c.sessions))
 
 	c.lock.Unlock()
 }
@@ -168,10 +169,10 @@ func (c *EchoClient) heartbeat(session getty.Session) {
 
 	//if err := session.WritePkg(ctx, WritePkgTimeout); err != nil {
 	if err = session.WritePkg(ctx, WritePkgASAP); err != nil {
-		log.Warn("session.WritePkg(session{%s}, context{%#v}) = error{%v}", session.Stat(), ctx, err)
+		log.Warnf("session.WritePkg(session{%s}, context{%#v}) = error{%v}", session.Stat(), ctx, err)
 		session.Close()
 
 		c.removeSession(session)
 	}
-	log.Debug("session.WritePkg(session{%s}, context{%#v})", session.Stat(), ctx)
+	log.Debugf("session.WritePkg(session{%s}, context{%#v})", session.Stat(), ctx)
 }

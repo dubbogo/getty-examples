@@ -17,7 +17,7 @@ import (
 )
 
 import (
-	log "github.com/dubbogo/log4go"
+	
 	config "github.com/koding/multiconfig"
 )
 
@@ -114,20 +114,6 @@ func initConf() {
 		panic(fmt.Sprintf("time.ParseDuration(WaitTimeout{%#v}) = error{%v}", conf.GettySessionParam.WaitTimeout, err))
 		return
 	}
-	// gxlog.CInfo("config{%#v}\n", conf)
-
-	// log
-	confFile = os.Getenv(APP_LOG_CONF_FILE)
-	if confFile == "" {
-		panic(fmt.Sprintf("log configure file name is nil"))
-		return
-	}
-	if path.Ext(confFile) != ".xml" {
-		panic(fmt.Sprintf("log configure file name{%v} suffix must be .xml", confFile))
-		return
-	}
-	log.LoadConfiguration(confFile)
-	log.Info("config{%#v}", conf)
 
 	return
 }

@@ -14,11 +14,12 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+
 	"unsafe"
 )
 
 import (
-	log "github.com/dubbogo/log4go"
+
 )
 
 ////////////////////////////////////////////
@@ -125,7 +126,7 @@ func (p *EchoPackage) Unmarshal(buf *bytes.Buffer) (int, error) {
 		return 0, err
 	}
 	if p.H.Magic != echoPkgMagic {
-		log.Error("@p.H.Magic{%x}, right magic{%x}", p.H.Magic, echoPkgMagic)
+		log.Errorf("@p.H.Magic{%x}, right magic{%x}", p.H.Magic, echoPkgMagic)
 		return 0, ErrIllegalMagic
 	}
 	if buf.Len() < (int)(p.H.Len) {

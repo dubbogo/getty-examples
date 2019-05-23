@@ -12,6 +12,7 @@ func main() {
 
 	go server.RunEventLoop(newSession)
 
+	log.Info("start hello server")
 	hello.WaitCloseSignals(server)
 }
 

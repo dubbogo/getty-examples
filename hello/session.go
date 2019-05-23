@@ -3,7 +3,7 @@ package hello
 import (
 	"fmt"
 	"github.com/dubbogo/getty"
-	"log"
+	
 	"net"
 	"time"
 )
@@ -40,7 +40,7 @@ func InitialSession(session getty.Session, pkgHandler getty.ReadWriter, listener
 	session.SetWriteTimeout(5 * time.Second)
 	session.SetCronPeriod(int(CronPeriod.Nanoseconds() / 1e6))
 	session.SetWaitTime(time.Second)
-	log.Printf("app accepts new session:%s", session.Stat())
+	log.Infof("app accepts new session:%s", session.Stat())
 
 	session.SetPkgHandler(pkgHandler)
 	session.SetEventListener(listener)

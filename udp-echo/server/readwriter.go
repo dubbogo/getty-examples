@@ -13,12 +13,13 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+
 	"time"
 )
 
 import (
 	"github.com/dubbogo/getty"
-	log "github.com/dubbogo/log4go"
+
 )
 
 type EchoPackageHandler struct {
@@ -61,24 +62,24 @@ func (h *EchoPackageHandler) Write(ss getty.Session, udpCtx interface{}) error {
 
 	ctx, ok = udpCtx.(getty.UDPContext)
 	if !ok {
-		log.Error("illegal UDPContext{%#v}", udpCtx)
+		log.Errorf("illegal UDPContext{%#v}", udpCtx)
 		return fmt.Errorf("illegal @udpCtx{%#v}", udpCtx)
 	}
 
 	startTime = time.Now()
 	if echoPkg, ok = ctx.Pkg.(*EchoPackage); !ok {
-		log.Error("illegal pkg:%+v, addr:%s\n", ctx.Pkg, ctx.PeerAddr)
+		log.Errorf("illegal pkg:%+v, addr:%s\n", ctx.Pkg, ctx.PeerAddr)
 		return errors.New("invalid echo package!")
 	}
 
 	buf, err = echoPkg.Marshal()
 	if err != nil {
-		log.Warn("binary.Write(echoPkg{%#v}) = err{%#v}", echoPkg, err)
+		log.Warnf("binary.Write(echoPkg{%#v}) = err{%#v}", echoPkg, err)
 		return err
 	}
 
 	_, err = ss.Write(getty.UDPContext{Pkg: buf.Bytes(), PeerAddr: ctx.PeerAddr})
-	log.Info("WriteEchoPkgTimeMs = %s", time.Since(startTime).String())
+	log.Infof("WriteEchoPkgTimeMs = %s", time.Since(startTime).String())
 
 	return err
 }

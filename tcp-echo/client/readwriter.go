@@ -12,12 +12,13 @@ package main
 import (
 	"bytes"
 	"errors"
+
 	"time"
 )
 
 import (
 	"github.com/dubbogo/getty"
-	log "github.com/dubbogo/log4go"
+
 )
 
 type EchoPackageHandler struct{}
@@ -58,18 +59,18 @@ func (h *EchoPackageHandler) Write(ss getty.Session, pkg interface{}) error {
 
 	startTime = time.Now()
 	if echoPkg, ok = pkg.(*EchoPackage); !ok {
-		log.Error("illegal pkg:%+v\n", pkg)
+		log.Errorf("illegal pkg:%+v\n", pkg)
 		return errors.New("invalid echo package!")
 	}
 
 	buf, err = echoPkg.Marshal()
 	if err != nil {
-		log.Warn("binary.Write(echoPkg{%#v}) = err{%#v}", echoPkg, err)
+		log.Warnf("binary.Write(echoPkg{%#v}) = err{%#v}", echoPkg, err)
 		return err
 	}
 
 	err = ss.WriteBytes(buf.Bytes())
-	log.Info("WriteEchoPkgTimeMs = %s", time.Since(startTime).String())
+	log.Infof("WriteEchoPkgTimeMs = %s", time.Since(startTime).String())
 
 	return err
 }

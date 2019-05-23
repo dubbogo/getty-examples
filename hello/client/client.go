@@ -1,10 +1,9 @@
 package main
 
 import (
-	gxtime "github.com/AlexStocks/goext/time"
 	"github.com/dubbogo/getty"
 	"github.com/dubbogo/getty-examples/hello"
-	"log"
+
 	"math/rand"
 	"sync"
 	"time"
@@ -50,19 +49,19 @@ func test() {
 	}
 	echoTimes := 10
 
-	counter := gxtime.CountWatch{}
+	counter := getty.CountWatch{}
 	counter.Start()
 	for i := 0; i < echoTimes; i++ {
 		session := selectSession()
 		err := session.WritePkg("hello", WritePkgTimeout)
 		if err != nil {
-			log.Printf("session.WritePkg(session{%s}, error{%v}", session.Stat(), err)
+			log.Infof("session.WritePkg(session{%s}, error{%v}", session.Stat(), err)
 			session.Close()
 			removeSession(session)
 		}
 	}
 	cost := counter.Count()
-	log.Printf("after loop %d times, echo cost %d ms", echoTimes, cost/1e6)
+	log.Infof("after loop %d times, echo cost %d ms", echoTimes, cost/1e6)
 }
 
 func selectSession() getty.Session {
@@ -70,7 +69,7 @@ func selectSession() getty.Session {
 	defer lock.RUnlock()
 	count := len(sessions)
 	if count == 0 {
-		log.Printf("client session array is nil...")
+		log.Infof("client session array is nil...")
 		return nil
 	}
 
@@ -85,10 +84,10 @@ func removeSession(session getty.Session) {
 	for i, s := range sessions {
 		if s == session {
 			sessions = append(sessions[:i], sessions[i+1:]...)
-			log.Printf("delete session{%s}, its index{%d}", session.Stat(), i)
+			log.Infof("delete session{%s}, its index{%d}", session.Stat(), i)
 			break
 		}
 	}
-	log.Printf("after remove session{%s}, left session number:%d", session.Stat(), len(sessions))
+	log.Infof("after remove session{%s}, left session number:%d", session.Stat(), len(sessions))
 	lock.Unlock()
 }
