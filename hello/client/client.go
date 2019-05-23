@@ -3,7 +3,7 @@ package main
 import (
 	gxtime "github.com/AlexStocks/goext/time"
 	"github.com/dubbogo/getty"
-	"github.com/wongoo/getty-examples/hello"
+	"github.com/dubbogo/getty-examples/hello"
 	"log"
 	"math/rand"
 	"sync"

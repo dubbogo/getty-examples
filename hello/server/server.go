@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/dubbogo/getty"
-	"github.com/wongoo/getty-examples/hello"
+	"github.com/dubbogo/getty-examples/hello"
 )
 
 func main() {
